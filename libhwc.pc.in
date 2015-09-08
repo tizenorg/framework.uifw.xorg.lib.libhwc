@@ -1,0 +1,10 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: libhwc
+Description: HWC X library for the X Client
+Version: @PACKAGE_VERSION@
+Libs: -L${libdir} -lhwc
+Cflags: -I${includedir}
