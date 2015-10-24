@@ -35,6 +35,7 @@
 #define _HWC_H_
 
 #include <X11/extensions/hwctokens.h>
+#include <X11/extensions/Xrandr.h>
 
 #include <X11/Xfuncproto.h>
 #include <X11/Xlib.h>
@@ -45,10 +46,10 @@ extern Bool
 HWCQueryVersion(Display * display, int *major, int *minor);
 
 extern Bool
-HWCOpen(Display * dpy, Window window, int *maxLayer);
+HWCOpen(Display * dpy, RRCrtc crtc, int *maxLayer);
 
 extern void
-HWCSetDrawables(Display * dpy, Window window, Drawable *drawables, XRectangle *srcRect, XRectangle *dstRect, int count);
+HWCSetDrawables(Display * dpy, RRCrtc crtc, Window window, Drawable *drawables, XRectangle *srcRect, XRectangle *dstRect, HWCCompositeMethod *compMethods, int count);
 
 extern void
 HWCSelectInput(Display * dpy, Window window, int mask);

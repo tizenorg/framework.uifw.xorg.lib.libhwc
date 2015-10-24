@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT(libhwc, 0.1.0, [http://])
+AC_INIT(libhwc, 0.2.0, [http://])
 AC_CONFIG_SRCDIR([src/hwc.c])
 AC_CONFIG_HEADER([config.h])
 
@@ -16,7 +16,7 @@ PKG_CHECK_MODULES(XLIBS, x11 xext)
 AC_SUBST(XLIBS_CFLAGS)
 AC_SUBST(XLIBS_LIBS)
 
-PKG_CHECK_MODULES(HWCPROTO, hwcproto)
+PKG_CHECK_MODULES(HWCPROTO, hwcproto >= 0.2.0)
 AC_SUBST(HWCPROTO_CFLAGS)
 AC_SUBST(HWCPROTO_LIBS)
 

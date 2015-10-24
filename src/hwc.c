@@ -218,6 +218,12 @@ HWCQueryVersion(Display * dpy, int *major, int *minor)
 
    LockDisplay(dpy);
    GetReq(HWCQueryVersion, req);
+   if (!req) {
+      UnlockDisplay(dpy);
+      SyncHandle();
+      return False;
+   }
+
    req->reqType = info->codes->major_opcode;
    req->hwcReqType = X_HWCQueryVersion;
    req->majorVersion = HWC_MAJOR;
@@ -236,7 +242,7 @@ HWCQueryVersion(Display * dpy, int *major, int *minor)
 }
 
 Bool
-HWCOpen(Display * dpy, Window window, int *maxLayer)
+HWCOpen(Display * dpy, RRCrtc crtc, int *maxLayer)
 {
    XExtDisplayInfo *info = HWCFindDisplay(dpy);
    xHWCOpenReply rep;
@@ -246,9 +252,16 @@ HWCOpen(Display * dpy, Window window, int *maxLayer)
 
    LockDisplay(dpy);
    GetReq(HWCOpen, req);
+   if (!req) {
+      UnlockDisplay(dpy);
+      SyncHandle();
+      return False;
+   }
+
    req->reqType = info->codes->major_opcode;
    req->hwcReqType = X_HWCOpen;
-   req->window = window;
+   req->window = 0;
+   req->crtc = crtc;
 
    if (!_XReply(dpy, (xReply *) & rep, 0, xFalse)) {
       UnlockDisplay(dpy);
@@ -265,7 +278,7 @@ HWCOpen(Display * dpy, Window window, int *maxLayer)
 }
 
 void
-HWCSetDrawables(Display * dpy, Window window, Drawable *drawables, XRectangle *srcRect, XRectangle *dstRect, int count)
+HWCSetDrawables(Display * dpy, RRCrtc crtc, Window window, Drawable *drawables, XRectangle *srcRect, XRectangle *dstRect, HWCCompositeMethod *compMethods, int count)
 {
     XExtDisplayInfo *info = HWCFindDisplay(dpy);
     xHWCSetDrawablesReq *req;
@@ -276,11 +289,17 @@ HWCSetDrawables(Display * dpy, Window window, Drawable *drawables, XRectangle *s
     LockDisplay(dpy);
 
     GetReqExtra(HWCSetDrawables, count * SIZEOF(xHWCDrawInfo), req);
+    if (!req) {
+       UnlockDisplay(dpy);
+       SyncHandle();
+       return;
+    }
 
     req->reqType = info->codes->major_opcode;
     req->hwcReqType = X_HWCSetDrawables;
     req->window = window;
     req->count = count;
+    req->crtc = crtc;
     p = (xHWCDrawInfo *) & req[1];
     for (i = 0; i < count; i++)
     {
@@ -293,6 +312,7 @@ HWCSetDrawables(Display * dpy, Window window, Drawable *drawables, XRectangle *s
         p[i].dstY = dstRect[i].y;
         p[i].dstWidth = dstRect[i].width;
         p[i].dstHeight = dstRect[i].height;
+        p[i].compMethod = compMethods[i];
     }
 
     UnlockDisplay(dpy);
@@ -309,6 +329,12 @@ HWCSelectInput(Display * dpy, Window window, int mask)
     LockDisplay(dpy);
 
     GetReq(HWCSelectInput, req);
+    if (!req) {
+       UnlockDisplay(dpy);
+       SyncHandle();
+       return;
+    }
+
     req->reqType = info->codes->major_opcode;
     req->hwcReqType = X_HWCSelectInput;
     req->window = window;

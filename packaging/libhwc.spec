@@ -1,13 +1,14 @@
 Name:       libhwc
 Summary:    X.Org HWC Extension client library
-Version:    0.1.1
-Release:    13
+Version:    0.2.0
+Release:    1
 Group:      System/Libraries
 License:    MIT
 Source0:    %{name}-%{version}.tar.gz
 BuildRequires:  pkgconfig(hwcproto)
 BuildRequires:  pkgconfig(x11)
 BuildRequires:  pkgconfig(xext)
+BuildRequires:  pkgconfig(xrandr)
 
 
 %description
